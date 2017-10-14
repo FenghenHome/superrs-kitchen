@@ -1,0 +1,338 @@
+v1.1.6.9
+Added at least partial support for Pixel/XL Oreo. Added at least partial support for devices such as Odroid where the root partition contains the system files and ramdisk. Added mmc file for odroidxu3.
+
+v1.1.6.8
+Added support for plat/nonplat_file_contexts as found in Android Oreo. Fixed apks not getting deodexed if system/app is in the path name but are not in /system/app. Look for system/init.rc instead of system/default.prop for Pixel/XL firmware detection. Pixel/XL updater-script: Added / in front of egl symlinks.
+
+v1.1.6.7
+Goodbye git-lfs nightmare, download zips instead. Updated SuperSU to v2.82-SR3. Added option to Update all tools in the Misc tools menu.
+
+v1.1.6.6
+Added fileencryption to the forceencrypt removed list. Add boot.img to updater-script and ROM.zip when building for Pixel/XL devices.
+
+v1.1.6.5
+Properly handle new java -version output. Skip app when deodexing if there is an app directory but no apk. Updated Busybox Installer by @osm0sis to v1.27.1.
+
+v1.1.6.4
+Exclude .ftm from fstab list.
+
+v1.1.6.3
+Updated SuperSU to v2.82-SR1. Limit fstab check to the directory we are looking in. All boot/recovery.img operations are now run as root. Removed build.prop requirement when unpacking boot.img.
+
+v1.1.6.2
+Added /data mount and unmount commands when /data/app is enabled.
+
+v1.1.6.1
+Added mofd_v1 to the fstab ignore list. Fixed fstab not being detected and hanging if /system is not in any existing fstab.
+
+v1.1.6.0
+Fixed Pixel/XL slot detection in configure.sh. Cleaned up some unused oatdump code.
+
+v1.1.5.9
+Make configure.sh world readable, writable, and executable.
+
+v1.1.5.8
+Added bc to the list of dependencies the kitchen installs if missing. Changed some things that should help the kitchen run in Windows 10 Creators Edition WSL (still not supported). Updated configure.sh to hopefully make it compatible with more devices.
+
+v1.1.5.7
+Added support for sec_omc.zip files in newer cache.img like gs8. Fixed cache.img not being extracted from tar.md5 when not contained in a zip. Updated Android Image Kitchen by @osm0sis to v2.8.
+
+v1.1.5.6
+Fixed failing to get directory contexts from system.img. Included binaries in repo to fix install binary loop.
+
+v1.1.5.5
+Updated smali/baksmali to v2.2.1. Do not use fstab with .fota in the name.
+
+v1.1.5.4
+Do not use fstab with .fwup in the name.
+
+v1.1.5.3
+Do not use fstab with nodata in the name. Removed duplicate /system/vendor/firmware set_metadata line.
+
+v1.1.5.2
+Updated Android Image Kitchen by @osm0sis to v2.7.
+
+v1.1.5.1
+Better detection of the correct fstab file when there are several. Fixed extracting rom zips that contain files with chunk in the name but are not sparsechunk.
+
+v1.1.5.0
+Remove all dm-verity flags from fstab instead of only /system. Small change to allow running in OSX. Updated Busybox installer by @osm0sis. Get file context from file_contexts if ls -Z produces "unlabeled" output.
+
+v1.1.4.9
+Added support for deodexing system/vendor/framework.
+
+v1.1.4.8
+Added api to smali command. Set api to 26 before deodexing Android O. Deodex PrebuiltGmsCore/app_chimera with the rest of the ROM. Updated smali/baksmali to latest commit to fix deodexing on pre O roms.
+
+v1.1.4.7
+Updated smali/baksmali to the latest commits. Fixed cap_test error in Android O. Enabled Android O deodexing (Alpha). Removed oatdump deodex method for M and N.
+
+v1.1.4.6
+Updated img2sdat. Updated sdat2img. Use ls instead of stat to determine file contexts (thanks to @osm0sis for the tip). All menus are now ENTER free unless there are more than 9 options. Added support for /system/CDA (hopefully). Fixed some local permission issues building system.img/sparse_dat roms. Check to be sure files/directories exist before writing metadata line when extracting system.img. Initial support for Android O. Prevent deodexing Android O until it works.
+
+v1.1.4.5
+Fixed KitKat and older deodex not finding the correct smali/baksmali. Combined L-N deodex functions eliminating ~1500 lines of code. Added error checking to smali/baksmali deodex method. Updated smali/baksmali to the latest commits. Create set_metadata lines for all /system/bin and system/vendor/bin files when extracting system.img.
+
+v1.1.4.4
+Allow extracting zips with the word recovery in the file name. Possibly fixed pulling system.img from some devices. Fixed custom zips not being packed properly. Added question asking if you want custom zips to delete the existing directories when flashing. Fixed updater-script not using capitalized partition names when required.
+
+v1.1.4.3
+Fixed file_contexts not being grabbed before unpacking boot.img manually. Fixed vendor and extra partitions being added to the updater-script more than once.
+
+v1.1.4.2
+Changed WSL to use Imgextractor.exe to extract img files (OS interoperability must be supported by your version of WSL). Replaced all unpack/repack tools with Android Image Kitchen by @osm0sis. The Windows version of AIK will be downloaded and used when running in cygwin (not tested). Updated Busybox to v1.26.2 by @osm0sis.
+
+v1.1.4.1
+Fixed building boot/recovery flashable zips. Updated mkbootimg/unpackbootimg by @osm0sis. Added grandprimevelte to devices.
+
+v1.1.4.0
+Fixed not adding the main menu and exit options in the by-name detection menu. Added option to choose smali/baksmali when there are more than one in tools/smali/current. Added visual confirmation for oat2dex, smali, and baksmali file selection on the deodex confirm page. Cleaned some badly formatted code.
+
+v1.1.3.9
+Removed getcap requirement for WSL/cygwin. Fixed regression in updater-script for vendor, data, misc partitions, and devices that do not use by-name. Only get permissions and capabilities if we are extracting api 19+. Added option to return to main menu or quit from by-name detection menu.
+
+v1.1.3.8
+Removed setcap as it is not required. Updated make_ext4fs source to support Nougat. Added custom HTC 10 file capabilities to make_ext4fs (thanks @Captain_Throwback). Changed SuperSU and Busybox updater-script lines to use /sbin/sh instead of busybox sh (thanks again @Captain_Throwback). Renamed slotdetect.sh to configure.sh. Added on-device by-name detection (thanks @bigrammy). Changed by-name detection through adb to use the find command (thanks again @bigrammy). Added ability to get by-name from device while booted in custom recovery (previously it only worked from Android). Updated smali/baksmail to latest commit. Updated SuperSU to v2.79-SR3.
+
+v1.1.3.7
+Fixed mode in updater-script. Add capabilities to local files when extracting system.img/vendor.img.
+
+v1.1.3.6
+Get original file permissions, contexts, and capabilities from mounted system.img and vendor.img when extracting and choosing set_metadata perm type. Changed permission for su binary in pre-rooted devices.
+
+v1.1.3.5
+Added support for TWRP that appends _a to by-name in recovery.fstab. Fixed by-name not being detected on devices that contain fstab.zram* files.
+
+v1.1.3.4
+Fixed vendor contexts not being added to the updater-script.
+
+v1.1.3.3
+Fixed unmount errors after flashing SuperSU and/or Busybox. Added support for Motorola systemchunk files extraction. Added a couple devices to the device repo. Allow building ROM with no boot.img after confirmation.
+
+v1.1.3.2
+Fixed config directory not being added to all zips. Fixed custom zips updater-script.
+
+v1.1.3.1
+Hopefully fixed the /tmp/slotsel error when flashing.
+
+v1.1.3.0
+ROM will now detect active slot on Pixel devices and flash to it (thanks to @mdalexca for the slot detection method and support). Prevent using sparse_dat on Pixel devices since it won't work. Hopefully added Pixel device support for cygwin. Fixed set_metadata perm type being chosen automatically when extracting a new rom. Updated SuperSU to v2.79-SR2.
+
+v1.1.2.9
+Updated SuperSU to v2.79-SR1. Added update-binary to support Nougat sparse_dat (Thanks @Captain_Throwback). Updated img2sdat by @xpirt to v1.1. Use the correct sparse_dat transfer list version for the ROM we are building. Replaced set_perm with set_metadata in custom zip updater-script. Use ifelse to unmount if mounted at the beginning of the updater-script.
+
+v1.1.2.8
+Fixed system/default.prop detection when building a rom zip.
+
+v1.1.2.7
+Replaced rimg2sdat with img2sdat.py by @xpirit. Removed 32-bit sparse_dat restriction. Updated sdat2img.py by @xpirit. Updated SuperSU to v2.78-SR5.
+
+v1.1.2.6
+Fixed kitchen terminating right when it starts.
+
+v1.1.2.5
+When extracting system.img, check for all img files in ROM directory and ask if you want to extract and include them. Add support for xz compressed system.new.dat files in CM builds. Alpha testing for Pixel devices.
+
+v1.1.2.4
+Use 0550 perms on init.sec.boot.sh when ro.board.platform=exynos5 to fix wifi.
+
+v1.1.2.3
+Do not deodex framework files that are already deodexed in M and N using oatdump and smali/baksmali.
+
+v1.1.2.2
+Updated SuperSU to v2.78-SR4. Added delete existing directories to updater-script when creating a custom zip. cygwin - Added notice on first run about cygwin being slower than native Linux. cygwin - Do not allow zip signing until it gets fixed.
+
+v1.1.2.1
+Updated smali/baksmali to the latest commit. Changed init.sec.boot.sh permissions to 0644. Added kitchen version to the support.zip. cygwin - Improved the speed of converting symlinks during extraction. cygwin - Fixed error about symlinks.orig.
+
+v1.1.2.0
+Updated Busybox Installer by @osm0sis. Added a support option in Misc Tools to create a small zip of things that help me when you have an issue. cygwin - Added aapt.exe and updated most of the binaries thanks to @DarkHeart Z. cygwin - Fixed not being able to choose sparse_dat.
+
+v1.1.1.9
+Use aapt.exe if it exists in tools dir for repacking apk and jar during deodexing on cygwin, otherwise error message. Fix device name not being recognized if there are more than one ro.product.device lines in build.prop.
+
+v1.1.1.8
+Fixed cygwin img extraction.
+
+v1.1.1.7
+Updated SuperSU to v2.78-SR3. Alpha test for cygwin img extract.
+
+v1.1.1.6
+Cleaned up the way we look for and move old rom files to the 00_project_files directory when extracting. Move bootimg and recoveryimg directories to 00_project_files when extracting new.
+
+v1.1.1.5
+Added check to see if the kitchen was really updated after an update. Added color back to the kitchen versions on the update screen. Fixed confusing screen after choosing to extract images from custom recovery.
+
+v1.1.1.4
+Added a bunch of devices. Fixed mmcblk devices not detecting properly from recovery.img if eol carriage returns are present in fstab. Updated SuperSU to v2.78 SR2.
+
+v1.1.1.3
+Added option to choose temporary device storage path for adb pull img files, or enter the path manually. Added the latest adb v1.0.36 for 64-bit Linux OS. Fixed vendor.img not being extracted from device on N roms. Updated L deodex algorithm to match M oat2dex. Added option to choose oat2dex version when deodexing L roms. Fixed custom zip failing when choosing to zipalign before building.
+
+v1.1.1.2
+Reverted to /proc/meminfo for physical ram detection. oat2dex for M: Removed option to keep framework when errors occur. oat2dex for M: Check for errors after finished deodexing the entire rom and report problems all at once. oat2dex for M: Updated framework deodex algorithm. Updated smali/baksmali to latest commit.
+
+v1.1.1.1
+Fixed issue where M and N twframework.jar and possibly others would not get deodexed using smali/baksmali and oatdump. Use aapt to pack classes*.dex instead of 7-zip.
+
+v1.1.1.0
+Do not check english-srk for missing lines when choosing it from the language menu. Use free utility to determine total ram for heapsize. Added check to be sure custom heapsize is not greater than the installed physical ram. Improved the heapsize status in the menu.
+
+v1.1.0.9
+Added custom heapsize option to the Misc Tools Menu. Added option to choose which oat2dex you want to use if there are more than one in the /kitchen/tools/smali/current directory. git will only track the current oat2dex the kitchen includes so adding more will no longer disrupt the updater.
+
+v1.1.0.8
+Updated Busybox installer by @osm0sis to v1.25.1. When building a custom zip that includes lib, lib64 is now included if it exists. Changed p7zip compression from maximum to normal since there is no apparent size difference and it is less resource intensive.
+
+v1.1.0.7
+Updated smali/baksmali and oat2dex to the latest commits. Added a check for universe and multiverse repositories before trying to install dependencies, and add the repos if they do not exist.
+
+v1.1.0.6
+Check if framework/oat exists before trying to deodex it for all M and N methods. Added option to create sparse or raw when choosing to build system.img from the build menu.
+
+v1.1.0.5
+Fixed bash check.
+
+v1.1.0.4
+Changed bash check to use $BASH instead of $SHELL. Fixed M and N smali/baksmali and oatdump deodex methods leaving stray dex files in framework and not creating jar files that do not already exist. Path without spaces error is now English only due to the language file not being loaded before the error. Fixed partition size detection using adb shell on N devices. Updated smali/baksmali and oat2dex to the latest commits.
+
+v1.1.0.3
+Fixed a few missing UI elements. Rewrite of the smali/baksmali M deodex method using the new 2.2b. New deodex method for N using the new smali/baksmali 2.2b. Added oatdump and smali/baksmali labels in the menu for N roms. Added notification and question regarding deletion of META-INF directory within apk files after deodexing N roms (now you get to choose).
+
+v1.1.0.2
+Fixed Nexus firmware not extracting since they changed the format from tgz to zip.
+
+v1.1.0.1
+The kitchen is now translatable using language files. Added language chooser if there are files other than english in the languages directory. If there are new english language elements added after an update, the non-english active language file will be updated with the new english elements for easy translation. Added Misc Tools menu. Added language reset to the Misc Tools menu. Moved Zip new devices to share to Misc Tools menu. Added Extra Directory menu. Moved /data/app support to Extra Directory menu. Updated SuperSU to v2.78-SR1.
+
+v1.1.0.0
+Added support for deodexing Xperia Z2 Marshmallow ROMS. Removed all Windows Subsystem for Linux (WSL) restrictions. Possibly made the kitchen more friendly to WSL and CYGWIN (I do not support these in any way and have not tested).
+
+v1.0.9.9
+Completely new Marshmallow deodex method using AOSP oatdump and dexrepair by @anestisb.
+
+v1.0.9.8
+Completely new Nougat deodex method using AOSP oatdump and dexrepair by @anestisb. Already deodexed files will now show in green during all deodex methods.
+
+v1.0.9.7
+Replaced the update-binary with one that supports flashing zip files larger than 2GB in TWRP v3.0.0-0 and higher (Thanks to @nkk71 for creating the TWRP patch and providing a pre-compiled update-binary. Thanks to @_that for pointing me in the right direction). Added compatibility for other flashable root zips such as phh's superuser. Changed name of root directory in rom from supersu to rootzip. Updated SuperSU to v2.78.
+
+v1.0.9.6
+Updated smali, baksmali, and oat2dex to the latest commits. Added additional checks for set_metadata in case we need to set contexts for symlinks that only exist after the flash. All contexts in file_contexts will now be added to the updater-script as long as the files exist in the rom, even if we don't have the correct uid/gid for the files. Changed the order of the get by-name menu, making boot/recovery images recommended. Added updater for the Installer/Launcher in case you are using Ubuntu4Kitchen or added the kitchen launcher manually.
+
+v1.0.9.5
+Added support for new kind of Samsung firmware structure with multiple tar.md5 files.
+
+v1.0.9.4
+Fixed another variable issue with smali/baksmali M deodex method.
+
+v1.0.9.3
+Fixed M smali/baksmali method for priv-app.
+
+v1.0.9.2
+Fixed cpio error when unpacking boot.img with hidden directories in ramdisk. Remove smali/baksmali as a backup for M oat2dex method. Added better error logging when deodexing M using oat2dex and when deodexing N. Allow keeping framework odex files when apps have errors so you can easily try the smali/baksmali method after the oat2dex method. Reverted M baksmali command to the way it was in v1.0.8.8 and earlier. New Feature - When deodexing M using oat2dex method, you now have the option to choose official oat2dex v0.86 or Latest commit built from source. Update oat2dex to the latest commit.
+
+v1.0.9.1
+Added support for odex.app.sqsh and odex.priv-app.sqsh. Fixed framework directory being moved to system/app if there is an odexed apk in framework while deodexing L.
+
+v1.0.9.0
+Added support for deodexing api level 24, Android Nougat. Added check to be sure build.prop exists after extracting. Added notice of possible failure before deodexing.
+
+v1.0.8.9
+Fixed Samsung csc files with spaces in the name not getting copied to system. Added cache.img.ext4 and cache.ext4 rename to cache.img before rom extraction. Updated smali/baksmali to latest commit. Updated 7z to v16.02. Determine the largest java heap size for deodexing while keeping 500M for your system. Improved the way files for extraction are detected in the ROM directory.
+
+v1.0.8.8
+Updated SuperSU to version 2.76. Updated oat2dex.jar used in N roms to latest commit. Fixed csc not being extracted in s7 edge ROMS.
+
+v1.0.8.7
+Fixed deodexing M with smali/baksmali. All deodex methods will now use all classes instead of only classes.dex, classes2.dex, and classes3.dex.
+
+v1.0.8.6
+Fixed L deodex deleting all apps after deodexing.
+
+v1.0.8.5
+Fixed exit_deo errors, and hopefully the other issues along with it.
+
+v1.0.8.4
+Fixed issues deodexing Lollipop roms since v1.0.8.1.
+
+v1.0.8.3
+Fixed deodexing that broke in v1.0.8.1.
+
+v1.0.8.2
+Fixed jar files not found while deodexing.
+
+v1.0.8.1
+Rewrote all deodex functions for efficiency.
+
+v1.0.8.0
+Fixed a few harmless typos in the ui. Fixed a typo in the knox remove list. Fixed system.img.ext4 not being found and renamed to system.img.
+
+v1.0.7.9
+Added a5xelte to device database. Added more knox apps to be removed. Removed the sparse_dat recommendation.
+
+v1.0.7.8
+Updated SuperSU to v2.74-2. Re-added support for tar.a backups. Added LG Zone2 to device database. Added support for getting by-name from recovery.img.
+
+v1.0.7.7
+dm-verity - Also look for and replace verify on /vendor lines in fstab. Fixed fstab detection.
+
+v1.0.7.6
+Support for adding/removing forcefdeorfbe (the new forceencrypt found in N roms). Changed the adding/removing forceencrypt method. dm-verity - only look for and replace verify on /system lines in fstab.
+
+v1.0.7.5
+Fixed forceencrypt not being detected properly. forceencrypt can now be added and removed.
+
+v1.0.7.4
+Added support for tar.md5 files not inside a zip.
+
+v1.0.7.3
+Added Root Menu to ROM Tools. Moved su.d from Boot Tools to the Root Menu. Moved root and busybox add/remove to the Root Menu.
+
+v1.0.7.2
+Added su.d support.
+
+v1.0.7.1
+Fixed terminal background colors.
+
+v1.0.7.0
+Updated SuperSU to v2.72.
+
+v1.0.6.9
+Fixed assert issues. Removed current assert display from ROM Tools. Added device assert display to the Asserts menu. Added custom assert display to Asserts menu. Added ROM Tools menu option to Asserts menu. Changing asserts will now return you to the Asserts menu instead of ROM Tools menu.
+
+v1.0.6.8
+Fixed the random sedxxxx file appearing when building rom zip on OnePlus.
+
+v1.0.6.7
+Fixed device name not being found on OnePlus. Fixed by-name from boot.img not being detected on OnePlus.
+
+v1.0.6.6
+Added ability to extract rom zips created with the new update-binary method. Fixed an issue where the kitchen might close occasionally when you first start it.
+
+v1.0.6.5
+Java 8 is now required to use the kitchen.
+
+v1.0.6.4
+Removed mount/unmount for /data/app support. Removed capabilities from data set_metadata. Updated oat2dex, smali, and baksmali to the latest commits.
+
+v1.0.6.3
+Fixed scrollback not going past 2 screens in gnome-terminal on Ubuntu 16.04 and probably others. Fixed allowing special characters typed in menu to break the kitchen.
+
+v1.0.6.2
+Fixed Samsung firmware not extracting if system.img is named system.img.ext4 inside the tar.
+
+v1.0.6.1
+Install default-jre instead of openjdk-7-jre since it is not available in 16.04. Added libc6-i386 to dependencies installer for 64-bit Linux.
+
+v1.0.6.0
+Fixed init.d detection.
+
+v1.0.5.9
+Fixed more stuff for Bash on Ubuntu on Windows. Changed updater to read changelog from file on Bitbucket. The kitchen updater will now only work for git clones.
+
+v1.0.5.8
+Added apt-get update before installing dependencies. Fixed dependencies issue using Bash on Ubuntu on Windows.
+
+v1.0.5.7
+Updated oat2dex from latest source for N deodexing. Fixed N Preview 2 deodexing.

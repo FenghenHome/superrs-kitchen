@@ -1,0 +1,203 @@
+v3.0.6.7
+The new Quit/Restart now only requires a single key press. superr.exe is even safer now according to VirusTotal.
+
+v3.0.6.6
+Fixed errors while packing dex into jar files when there are multiple dex files for the jar. Hopefully fixed superr.exe getting removed by Windows Defender (thanks @nkk71 for pointing out the double system call). The kitchen now asks if you want to quit or restart when choosing quit from the menus or when the kitchen crashes. Fixed symlinks ending up as set_metadata lines when the source files have non-standard file_contexts.
+
+v3.0.6.5
+Use sysXtract by @nkk71 to extract img files, and use 7-zip as a backup. Linux: Use all 64-bit binaries on 64-bit systems. Fixed crash when deodexing firmware that contains /system/vendor/framework that is already deodexed. Added check to be sure all files with non-standard file contexts get added to the updater-script for set_metadata perm type. Use correct file contexts for /vendor in set_metadata updater-script. Fixed root not being added to the updater-script after changing perm types if previously rooted. Updated the update-binary script functions by @osm0sis. Added a slightly modified arch detection by @topjohnwu to the update-binary script to include the correct libs for 64-bit Android when setting metadata. Modified set_metadata/_recursive functions to use the correct libs in the update-binary script. Replaced package_extract_file and package_extract_dir functions in the update-binary script to improve extraction speed. Improved on-device by-name detection in configure.sh by testing the path for system and boot. Fixed crash when creating set_metadata updater-script from a system directory with no symlinks.
+
+v3.0.6.4
+Windows now creates fs_config files when extracting system.img (@nkk71 has done it again!). Added fs_config status next to "Build system.img" in the Build Menu. Windows and Linux both use 7-zip to extract img files. Improvements to set_metadata perm type to be sure we get all files with capabilities into the updater-script. Removed getcap dependency.
+
+v3.0.6.3
+Linux: Fixed system.img extraction not creating fs_config if there are no capabilities. Linux: Fixed vendor.img extraction.
+
+v3.0.6.2
+Fixed all device files being zipped when choosing to zip new device files. Added option to upload new device database files directly from the "Zip devices/capfiles to share" menu. Keep track of new devices you have already uploaded, do not keep track if they are not uploaded. Added option to upload support.zip directly from the "Support: Create zip to send" menu. Added XDA username question to be used in filenames when creating device and support zips so I can match uploaded files to xda posts more easily.
+
+v3.0.6.1
+Linux - Use custom fs_config file to build system.img if you extracted from a system.img, or if one exists in the devices database. Windows - Use custom fs_config file to build system.img if one exists in the devices database. Add current device directory to support.zip. Moved devices database out of the repo, will be downloaded during first run. Added option to Misc Tools to update device database. Use SSL to download plugins.
+
+v3.0.6.0
+Fixed typo preventing vendor.new.dat from being created in sparse_dat roms. Fixed /vendor/default.prop being modified instead of /default.prop on pre-Oreo Pixel/XL roms. Updated make_ext4fs for Oreo. make_ext4fs now uses pure AOSP permissions and capabilities. Windows make_ext4fs is finally up to date (Huge thanks to @nkk71 for fixing the cygwin build to make this possible). Updated Android Image Kitchen by @osm0sis to v2.9.
+
+v3.0.5.9
+Updated SuperSU to v2.82-SR3. Fixed apks not getting deodexed if system/app is in the path name but are not in /system/app. Look for system/init.rc instead of system/default.prop for Pixel/XL firmware detection. Pixel/XL updater-script: Added / in front of egl symlinks, allow /system/etc > /system/etc symlink. Added at least partial support for Pixel/XL Oreo. Added at least partial support for devices such as Odroid where the root partition contains the system files and ramdisk. Properly handle file contexts if they are not found from the mounted system.img.
+
+v3.0.5.8
+Rename img files to lower case when choosing to extract img. Add boot.img to updater-script and ROM.zip when building for Pixel/XL devices.
+
+v3.0.5.7
+Updated md5 for Busybox Installer by @osm0sis to v1.27.1. Added fileencryption to the forceencrypt removed list. Added capfiles-23 and capfiles-24 for gts28vewifi.
+
+v3.0.5.6
+Fixed crash when creating symlinks if the destination file already exists. Fixed crash getting directory size when the directory contains symlinks. Fixed crash in oat2dex method right after downloading official oat2dex.jar. Fixed crash if app or priv-app directories do not exist while deodexing. Fixed crash when deodexing if there is an app directory but no apk. Windows: Added more capability files.
+
+v3.0.5.5
+Fixed crash in oat2dex deodex method after choosing official oat2dex. Fixed Lollipop deodex not removing arch directory. Fixed Lollipop deodexing apps a second time when deodexing framework. Windows: Added more capability files.
+
+v3.0.5.4
+Windows: Added per-device capabilities files to the device database (tools/devices) that will be used if it exists.
+
+v3.0.5.3
+Fixed system.ext4.win extraction when there are recovery files in the directory.
+
+v3.0.5.2
+Fixed system.ext4.win extraction when there are sha2 files in the directory.
+
+v3.0.5.1
+Added option to download/install language translations. Added Chinese to the language downloads. Windows: Fixed language check overwriting the new language file.
+
+v3.0.5.0
+Use 7-zip for all zip compression.
+
+v3.0.4.9
+Windows: Speed and accuracy improvements to file_contexts in updater-script. Windows: Sort symlinks. Windows: Fix /egl symlinks missing the /. Fixed crash and properly handle new java -version output. Added per-project option to set rom zip compression level in file 00_project_files/rom_comp_level.
+
+v3.0.4.8
+Added support for the new plat/nonplat_file_contexts in Android O DP4. Improved get_contexts function to parse the wildcards provided in *_context files.
+
+v3.0.4.7
+Find and use latest Busybox installer by @osm0sis instead of using a predefined link. Updated Busybox md5 to v1.26.2 by osm0sis.
+
+v3.0.4.6
+Find and use latest version of Android Image Kitchen by @osm0sis instead of using a predefined link.
+
+v3.0.4.5
+Per-project custom debloat is now possible by adding bloat_custom file to your 00_project_files directory.
+
+v3.0.4.4
+Don't adb pull cache.img when extracting from Samsung devices. Fixed crash if there is no csc.zip in the cache.img when extracting Samsung firmware.
+
+v3.0.4.3
+Fixed update-binary conversion not working with configure.sh. Fixed several other major issues with update-binary conversion. Switched from native Windows/Linux commands to Python command for moving directories. Added cache.img to the adb pull list for Samsung devices. Fixed crash when we try to install a plugin but the server is down.
+
+v3.0.4.2
+Exclude .ftm from fstab list. Fixed crash when creating support.zip. Tried to fix crash when extracting from adb on some devices.
+
+v3.0.4.1
+Added md5 check for SuperSU.zip and Busybox.zip after update.
+
+v3.0.4.0
+Install all modules automatically when the kitchen is run. Added md5 check of tools after kitchen update to see if they need to be updated. Windows: Fixed only getting symlinks from the 1st volume when extracting multi-volume tar/win files. Linux: Fixed AIK install crashing on fresh kitchen clone.
+
+v3.0.3.9
+Removed build.prop requirement when unpacking boot.img. Upper and lower case responses are now accepted in all menus and prompts. Linux: Fixed init.d being owned by root after adding it. Fixed extracting tar/win files that were created using absolute paths. Windows: Fixed symlinks not being created and causing a crash when extracting tar/win files.
+
+v3.0.3.8
+Updated SuperSU to v2.82-SR1. Linux: Fixed kitchen hanging when trying to delete a project that contains an unpacked boot.img with root owned files. Fixed crash if ro.build.display.id does not exist in build.prop.
+
+v3.0.3.7
+Added /data mount and unmount commands when /data/app is enabled. Fixed a few occurrences of SYSTEM and APP devices using system.
+
+v3.0.3.6
+Fixed dm-verity not being removed on some devices. Fixed by-name not being correctly detected on some devices. Added mofd_v1 to the fstab ignore list. Fixed fstab not being detected and hanging if /system is not in any existing fstab.
+
+v3.0.3.5
+Fixed crashes when dealing with boot.img and possibly others.
+
+v3.0.3.4
+Windows: The kitchen launcher now calls python3 instead of python. Windows: All internal Python calls to external programs call the appropriate python/python3. Fixed issue with custom asserts.
+
+v3.0.3.3
+Updated plugin url to work with new file server.
+
+v3.0.3.2
+Windows: Fixed Pixel/XL symlink failure when flashing.
+
+v3.0.3.1
+Fixed custom zip not showing status on screen after offering to convert to update-binary. Fixed Pixel/XL slot detection in configure.sh. Fixed Pixel/XL symlink failure when flashing.
+
+v3.0.3.0
+Windows: Hopefully fixed adb extract on most devices when booted in Android.
+
+v3.0.2.9
+Fixed crash if we don't get device name from an adb extraction. Use capital SYSTEM when needed while extracting with adb and booted in Android. Look for a good place for extraction on device when using adb booted in Android. Look for img files to adb pull when booted in Android. Fixed crash while unpacking recovery.img. Fixed crash when extracting system.img that includes /system/bin/[.
+
+v3.0.2.8
+Fixed crash when extracting zips containing AP and CSC tar.md5 files. Add metadata lines for everything in /system/bin recursively. Updated configure.sh to hopefully make it more compatible with more devices. Fixed adb partition size detection.
+
+v3.0.2.7
+Fixed smali/baksmali crash when there is no apkname__classes.dex and we try to rename.
+
+v3.0.2.6
+Fixed /data always including itself in raw_img roms. Fixed extra partitions such as /vendor not being included in raw_img roms even if you want them.
+
+v3.0.2.5
+Fixed cache.img not being extracted from tar.md5 when not contained in a zip. Look for and extract system and cache .img, .img.ext4, and .ext4 from tar.md5 files. Linux: Fixed some AIK 2.8 binaries not being marked executable after extraction. Windows: Fixed crash when extracting system.img due to currently unknown error, and log the line that causes the error.
+
+v3.0.2.4
+Windows: New icon for the launcher, and smaller size. WSL: Fixed img files not extracting. Windows: Fixed line ending in configure.sh
+
+v3.0.2.3
+Fixed crash if trying to extract an img file when there is no build.prop. Added support for sec_omc.zip files in newer cache.img like gs8. Windows: Fixed files not being extracted from system.img. 
+
+v3.0.2.2
+Linux: Fixed crash when ls -Z does not output file context, and we iterate file_contexts file. Linux: Fixed failing to get directory contexts from system.img. Linux: Fixed directory symlinks not being created. Fixed boot.img line not being removed from updater-script on Pixel/XL devices. Fixed debloat not removing all files in bloat list. Fixed file_contexts file not including / and /d. Updated Android Image Kitchen by @osm0sis to v2.8.
+
+v3.0.2.1
+Windows/WSL: Back to Python zipfile() module for compressing flashable zips. Linux: Fixed the error created in last update unpacking AIK when fresh cloning. Added check for / at the beginning of bloat_custom lines before deleting to be sure we only delete paths relative to the project directory.
+
+v3.0.2.0
+Fixed odex.xz files crashing the kitchen. Added option to remove asserts from ROM. Do not use fstab with .fota in the name. Use 7-zip (included) to pack all flashable zips in Windows and WSL.
+
+v3.0.1.9
+Windows: Fixed b key press not being recognized. Added a Back option to the root method options. Only allow key presses that correspond to menu options. Fixed project name adding an extra superr_ when creating new project from the project selection menu. Set permissions of configure.sh to 777 instead of /tmp to 755.
+
+v3.0.1.8
+Windows: Use 7-zip (included) to extract img files instead of Imgextractor. Windows: Fixed missing symlinks in updater-script. Windows: Fixed many file contexts not being set correctly. Windows/Linux: Fixed system/SYSTEM on devices that use SYSTEM. Linux: Do not create metadata lines for symlinks.
+
+v3.0.1.7
+Fixed manually signing zip when there are more than one to choose from. Added ability to convert all flashable zips to update-binary script when building. Added per-project option in Misc Tools for update-binary script - Always convert, Never convert, Ask every time. Added check for delete_recursive when converting to update-binary script. Fixed mount command not getting converted to update-binary script if rom does not use by-name.
+
+v3.0.1.6
+Fix crash when signing zips that use an update-binary script in Windows. Log zip signing in sign.log. Fixed update-binary conversion on roms that do not use by-name. Make a copy of *_statfile.txt after extracting img files in Windows. Add *_statfile.txt to support zip. Add META-INF directory to support.zip. Fixed Downloading/installing screen that disappeared.
+
+v3.0.1.5
+Disable sepolicy-inject root method for Windows. Fixed sepolicy-inject root method for Linux. Fixed some debloat/knox checks. Updated smali/baksmali to v2.2.1.
+
+v3.0.1.4
+Display root type instead of Rooted. Fix error during deodex cleanup on L and M. Fix crash when removing knox.
+
+v3.0.1.3
+Change root status to rooted when adding Magisk using the plugin.
+
+v3.0.1.2
+Fixed logs crash when check for updates on start is enabled.
+
+v3.0.1.1
+Fixed crash in Windows when checking for app_chimera at the start of deodexing N and O. Fixed crash when finishing deodex on M and L. Fixed crash and show error message when entering the wrong syntax for custom asserts. Fixed boot/AIK still being part of the repo and causing Windows tools install failure after resetting tools and boot extraction failure on Linux. Fixed crash removing knox in Windows. Fixed crash deleting plugins if example does not exist. Heapsize errors now return you to heapsize options instead of Misc Tools. Added confirmation when deleting projects. Tried to fix META-INF1 remaining after builing rom.
+
+v3.0.1.0
+Fixed crash when choosing main menu from root zip options menu. Fixed crash when getting by-name through adb.
+
+v3.0.0.9
+zipalign - check to make sure files exist before renaming and record in main.log. Fixed assert getting broken when building rom. Fixed line endings in updater-script when running in Windows.
+
+v3.0.0.8
+Minor improvement to set_metadata generation in Windows. Fixed Android O rom not building due to lack of xbin.
+
+v3.0.0.7
+Ignore commented lines in build.prop. Do not create set_metadata lines for files/directories that do not exist. Do not use fstab with nodata in the name. Removed duplicate /system/vendor/firmware set_metadata line. Fixed tar creation for future use.
+
+v3.0.0.6
+Hopefully fixed crash after signing zips when checking for update-binary script. Updated Imgextract.exe to 1.3.7.
+
+v3.0.0.5
+Fixed Windows kitchen trying to update the Linux launcher. Fixed cyfile errors. Fixed system.img.ext4 not being renamed automatically if not in an archive. Added dialog informing we are getting the plugin list when installing a plugin.  Check for and show error message when trying to run Bash plugins in Windows. Remove all set_metadata lines with a context of "?". Add all files in /system/bin to the updater-script.
+
+v3.0.0.4
+Require kitchen restart after updating. Fixed duplicate unmount commands in updater-script when extracting extra img files. Fixed some language file checks from crashing. Added official Windows launcher (superr.exe). The kitchen should install psutil (win/linux) and colorama (win) packages now if they are not already installed.
+
+v3.0.0.3
+Fixed custom zips on Pixel devices. Removed attempts to pip install packages from within the kitchen. Added logging to adb operations.
+
+v3.0.0.2
+Fixed extracting Pixel firmware.
+
+v3.0.0.1
+Download and extract Android Image Kitchen (Linux) directly from the XDA thread. Fixed extracting tar.gz files. Fixed crash if the main tools download/extract fails. Fixed crash in Linux when updating the kitchen launcher. Fixed crash when running the updater if there is no update available. Added logging to img extract operations. Fixed crash if Java 8 is not installed on Linux. Added check for proper java installation on Windows. Fixed language files other than English.
+
+v3.0.0.0
+Rewritten in Python for cross-platform support.
