@@ -5675,7 +5675,7 @@ root() {
 	elif [[ $choice = "3" ]]; then
 		if [[ ! -d $tools/inject-sepolicy ]]; then
 			cd $tools
-			(wget https://bitbucket.org/superr/superrs-kitchen/downloads/inject-sepolicy-addon.zip 2>&1) >> $logs/zip.log
+			(wget https://github.com/FenghenHome/superrs-kitchen/raw/master/download/inject-sepolicy-addon.zip 2>&1) >> $logs/zip.log
 			$p7z x -y inject-sepolicy-addon.zip 2>&1 >> $logs/zip.log
 			rm -rf inject-sepolicy-addon.zip
 			root
@@ -6328,7 +6328,7 @@ stand=$(tput smso)
 underline=$(tput smul)
 normal=$(tput sgr0)
 clears=$(tput clear)
-dlurl="https://bitbucket.org/superr/superrs-kitchen/downloads"
+dlurl="https://github.com/FenghenHome/superrs-kitchen/raw/master/download"
 if [[ ! $(echo $(pwd) | grep " ") = "" ]]; then
 	banner
 	echo "$redb$yellowt${bold}ERROR:$normal"
