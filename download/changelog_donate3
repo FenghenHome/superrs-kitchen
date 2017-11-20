@@ -1,3 +1,45 @@
+v3.0.8.1
+Windows: Fixed extracting Motorola firmware that contains sparsechunk files. Linux: Removed awk, dd, and head dependencies. Log simg2img operations in main.log.
+
+v3.0.8.0
+Fixed crash starting windows after last update.
+
+v3.0.7.9
+Fixed text input not allowing arrow keys. Added text showing img size while building. Log img2sdat and sdat2img operations in main.log. Return and cleanup properly during sparse_dat rom creation if system.img build fails. New update-binary compiled and patched by @Captain_Throwback to hopefully fix all issues. Fixed unzip arguments for unpacking chunk files and for unpacking update-binary when signing.
+
+v3.0.7.8
+Keep all adb shell calls inside quotes to avoid windows grep, tr, etc errors. Hopefully fixed partition size through adb, again. Added dependencies check for Windows. Windows: Python2 is now a required dependency. Removed extra mount command in sparse_dat updater-script (thanks @firefds). Linux: Removed which dependency.
+
+v3.0.7.7
+Really fixed updater-script not changing by-name partition labels when required.
+
+v3.0.7.6
+Ignore data.ext4.win when extracting system.ext4.win. Windows: Fixed crash when trying to get data from build.prop on le_x2 and possibly others. Do not accept symlinks with non-ascii characters. Fixed updater-script not changing by-name partition labels when required. Added support for j3xnlte style by-name partition labels.
+
+v3.0.7.5
+Fixed m key press not taking you to the main menu from the extract menu. Reverted to old screen clearing method for WSL. Fixed file_contexts.bin conversion for some files. Fixed TWRP backups without a system directory not extracting. Linux (not WSL): Create fs_config files from TWRP *.win* and older *.tar backups. Fixed crash when getting partition size through device. Windows: Hopefully fixed getting partition size from device. Replaced oat2dex latest commit with latest release.
+
+v3.0.7.4
+Fixed E:unknown command [] at the end of flashing due to tabs in the updater-script (thanks @nkk71 for finding the solution).
+
+v3.0.7.3
+Fixed SuperSU.zip download not working since their SSL cert expired.
+
+v3.0.7.2
+Fixed last update breaking the kitchen. Updated SuperSU to v2.82 SR5. Updated Busybox installer by @osm0sis to latest version.
+
+v3.0.7.1
+Updated img2sdat by @xpirt to version 1.5. New update-binary for use in all perm_types, patched and compiled by @Captain_Throwback. Fixed typo/bug when getting partition size through adb shell. Fixed regression from #de161929 not allowing to unpack boot.img without unpacking rom first. Updated smali, baksmali, and oat2dex to the latest commits. Use 7-zip to extract zips instead of Python zipfile module. Log all zip pack/unpack operations in 00_project_files/logs/zip.log.
+
+v3.0.7.0
+Linux: Removed tput dependency. Sort plugin list alphabetically. Added support for detecting amlogic partition paths when choosing to Detect mmcblk partitions from recovery.img.
+
+v3.0.6.9
+Windows: Added screen clearing with ability to scroll up to see the history (same behavior as Linux). Linux: Removed getcap, stat, and some other unneeded dependencies. Linux: Added check/error for running as root. Look for device name in ro.build.description as a last resort to avoid crash.
+
+v3.0.6.8
+Fixed crash if ro.build.display.id does not exist in build.prop. Added support for extracting newer Motorola firmware packages. Added /system/vendor/etc to fstab check locations. Some code cleanup.
+
 v3.0.6.7
 The new Quit/Restart now only requires a single key press. superr.exe is even safer now according to VirusTotal.
 

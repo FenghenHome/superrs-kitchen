@@ -1,3 +1,18 @@
+v1.1.7.4
+New update-binary compiled by @nkk71 to hopefully fix all update-binary errors/issues. Removed extra mount command in sparse_dat updater-script (thanks @firefds).
+
+v1.1.7.3
+Fixed E:unknown command [] at the end of flashing due to tabs in the updater-script (thanks @nkk71 for finding the solution). Removed getcap and bc dependencies. Added python2 and python3 dependencies. Replaced oat2dex latest commit with latest release.
+
+v1.1.7.2
+Code cleanup/restructure. New kitchen launcher with quit and restart options. Fixed init.d and insecure boot on root owned ramdisk. Fixed two boot messages that were not showing up. Updated SuperSU to v2.82 SR5. Updated Busybox installer by @osm0sis to latest version. New update-binary for use in all perm types, patched and compiled by @Captain_Throwback. Updated smali, baksmali, and oat2dex to the latest commits. Fixed SuperSU.zip download not working since their SSL cert expired.
+
+v1.1.7.1
+Fixed extraction on devices that have spaces in the device name. Fixed getting mmc partitions from recovery.img. Removed a single blank line from the top of all screens.
+
+v1.1.7.0
+Updated make_ext4fs for Oreo. make_ext4fs now uses pure AOSP permissions and capabilities. Added /system/vendor/etc to fstab check locations. Look for device name in ro.build.description as a last resort. Updated img2sdat by @xpirt to version 1.5. Added link to the Donate version thread in the main menu.
+
 v1.1.6.9
 Added at least partial support for Pixel/XL Oreo. Added at least partial support for devices such as Odroid where the root partition contains the system files and ramdisk. Added mmc file for odroidxu3.
 

@@ -11,8 +11,9 @@ export t_menu_updates="Check for updates"
 export t_menu_misc="Misc Tools"
 export t_menu_boot_recovery="Boot/Recovery Tools"
 export t_menu_rom_tools="ROM Tools Menu"
+export t_menu_donate="Get the Donate version for Windows/Linux!"
 export t_menu_new="New Project"
-export t_menu_quit="Quit(退出)"
+export t_menu_quit="Quit"
 export t_menu_back="Back"
 
 # ROM Tools Menu
@@ -214,7 +215,7 @@ export t_menu_zip_devices="Zip new devices to share"
 export t_menu_language="Reset language"
 export t_menu_heapsize="Heapsize Menu"
 export t_menu_support="Support: Create zip to send"
-export t_menu_reset="Update all tools"
+export t_menu_reset="Reset all tools"
 export t_menu_binaries="Update binaries"
 export t_support_create="Creating support.zip ..."
 export t_support_finish="Support zip has been created in your project directory"
@@ -253,7 +254,7 @@ export t_extra_data_q="Would you like to add /data/app support?  y/n  "
 export t_extra_data_perm="Please choose /data perm type: "
 
 # Selection
-export t_select="Make your selection(输入你的选项):  "
+export t_select="Make your selection:  "
 export t_select_enter="Make your selection and press ENTER:  "
 
 # Notices
@@ -317,7 +318,7 @@ export t_deodex_disclaimer="Deodexing ROMs may or may not work. You may get\nerr
 export t_deodex_use_method="Which deodex method should we use?"
 export t_deodex_oat2dex_ver="Which oat2dex version should we use?"
 export t_deodex_oat2dex_official="Official v0.86"
-export t_deodex_oat2dex_latest="Latest commit built from source"
+export t_deodex_oat2dex_latest="Latest release"
 export t_title_cho_smali="Choose smali:"
 export t_title_cho_baksmali="Choose baksmali:"
 export t_title_cho_oat2dex="Choose oat2dex:"
@@ -483,6 +484,7 @@ export t_update_no_internet="The Kitchen could not detect an internet connection
 export t_update_fail="There was a problem updating. If you modified\nany kitchen files other than your project, you\ncan either revert the changes and try again\nor do a fresh clone of the kitchen."
 export t_update_q="Would you like to update now?  y/n  "
 export t_update_auto_q="Do you want to check for updates when the kitchen starts?  y/n  "
+export t_restart="The kitchen needs to restart"
 
 # New Project
 export t_new_q="Enter new project name (${yellowt}spaces will be replaced with _$normal):"
@@ -512,7 +514,7 @@ export t_img_flash_fail2="The flashable will not work because there is no\nparti
 export t_img_sparse_q="What type of system.img should we create?"
 
 # Language
-export t_title_cho_lang="Choose language(选择语言):"
+export t_title_cho_lang="Choose language:"
 export t_reset_language="Language has been reset. Changes will be made\nthe next time you start the kitchen"
 export t_checking_language="Checking language file"
 export t_lang_added="New English language elements have been added to"

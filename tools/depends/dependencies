@@ -1,6 +1,5 @@
 ar
 basename
-bc
 cat
 chown
 cp
@@ -14,7 +13,6 @@ echo
 find
 gawk
 gcc
-getcap
 grep
 gunzip
 gzip
@@ -29,6 +27,9 @@ mount
 mv
 paste
 perl
+pgrep
+python2
+python3
 rev
 rm
 sed
@@ -37,11 +38,13 @@ stat
 strings
 sudo
 tar
+tee
 touch
 tput
 tr
 umount
 uname
+unzip
 wc
 wget
 whoami
