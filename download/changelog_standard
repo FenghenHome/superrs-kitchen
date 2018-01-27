@@ -1,3 +1,24 @@
+v1.1.8.1
+Updated md5 for Android Image Kitchen by @osm0sis to v3.1. Use apk name for deodexing instead of app directory name in case the names are different. General cleanup.
+
+v1.1.8.0
+Fixed removing flags following verify when removing dm-verity. Call /sbin/unzip instead of busybox unzip when installing SuperSU and Busybox.
+
+v1.1.7.9
+Fixed ownership of fstab and default.prop/prop.default when they are changed and exist outside the boot.img. Fixed extracting Moto firmware that includes system_b.img. Fixed extracting Moto firmware that uses sparsechunks and standard ext4.
+
+v1.1.7.8
+Updated checksum for Android Image Kitchen v3.0 by @osm0sis. Fixed dm-verity status display if fstab exists but dm-verity is in the dtb. Fixed fstab detection. Fixed default.prop detection when default.prop is a symlink to /system/etc/prop.default.
+
+v1.1.7.7
+Added support for removing dm-verity from dtb.
+
+v1.1.7.6
+Added support for extracting more Moto firmware. Added support for fixing Moto system.img with additional superblock.
+
+v1.1.7.5
+Improved on-device by-name detection in configure.sh by testing the path for system and boot. Fixed /data not flashing in sparse_dat roms if set_metadata is chosen for /data. Added Free to the banner. Added devices: Aqua Air, dream2lte, dreamlte, gracelte, hero2lte, marlin, mido.
+
 v1.1.7.4
 New update-binary compiled by @nkk71 to hopefully fix all update-binary errors/issues. Removed extra mount command in sparse_dat updater-script (thanks @firefds).
 

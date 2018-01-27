@@ -1,3 +1,90 @@
+v3.1.1.0
+Fixed language entries getting cut off if there is an equal symbol in the text. Fixed gitlab username error message disappearing so fast you can't see it. Added check with gitlab api to be sure your username is correct as it will mess up the kitchen updater otherwise. Fixed crash when extracting older Nexus firmware that does not contain a vendor.img. Fixed custom bloat list not being refreshed when bloat_custom file changes. Read url output directly instead of downloading/reading a temporary file. Added several items to the knox remove list and bloat list. Added Windows support to the superr launcher (not superr.exe) for those who prefer to start the kitchen from the Windows command line.
+
+v3.1.0.9
+Do not reset language when resetting all tools. Fixed crash when unpacking boot.img.
+
+v3.1.0.8
+Get boot.vdex classes name from boot.oat when deodexing Oreo. Added encoding type to language files to ensure proper display. Fixed extra quote being added to some set_metadata lines when using default perms.
+
+v3.1.0.7
+Fixed crash when choosing Boot/Recovery Tools menu on Pixel firmware. Handle exception when subproccess communicate fails.
+
+v3.1.0.6
+New Oreo deodex method based on vdexExtractor by @anestisb. Use apk name for deodexing instead of app directory name in case the names are different. Updated md5 for Android Image Kitchen by @osm0sis to v3.1. Added support for ramdisk.img/kernel.img from Huawei Oreo firmware. Added /system/etc/selinux to the search locations for file_contexts. Fixed crash replacing lower case partitions with upper case in the updater-script.
+
+v3.1.0.5
+Fixed custom directory display in the Extra Directory Menu when there are more than one. Ask if custom directories should be flashed to a partition instead of assuming they should. Use a python dictionary to store language data instead of importing variables. Removed all color and newline escape codes from language file. Remember language choice after update. Fixed asserts not coming back after you remove them from the asserts menu and try to add them back. General code cleanup.
+
+v3.1.0.4
+Ask for confirmation before recording the gitlab username in case of typos. Prevent the possibility of having more than one username in the git config. Fixed crash when devicename has not been defined before pulling img from custom recovery.
+
+v3.1.0.3
+Added skip and quit options to the by-name detection menu. Fixed possibility for crash when checking boot status if we don't find a ramdisk. Fixed crash if system.new.dat is named system.new.dat.*. Ask your Gitlab username and add it to git config so you won't be asked every time you update.
+
+v3.1.0.2
+Added option in plugin manager to check for plugin updates and update all of them at once. Moved getconf, getprop, and md5chk functions to srktools module to be accessible by plugins. Fixed plugin manager returning to main menu if a non-existing option is pressed. Removed unused language variables. Fixed not returning to main menu when adb perations fail.
+
+v3.1.0.1
+Fixed removing flags following verify when removing dm-verity. Ignore system_b.img in newer Moto firmware. Call /sbin/unzip instead of busybox unzip when installing mods.
+
+v3.1.0.0
+Fixed fstab detection correctly this time.
+
+v3.0.9.9
+Windows: Fixed default.prop operations if default.prop is a symlink. Remove dm-verity and forceencrypt from all fstab files if more than one exist. Fixed crash on first update after fresh clone due to updatecheck conf not being set yet.
+
+v3.0.9.8
+Fixed fstab not being found in /vendor/etc if init.rc is not in /system. Fixed Pixel/Pixel2 default.prop/prop.default detection. Linux: Fixed ownership of fstab and default.prop/prop.default when they are changed and exist outside the boot.img. Fixed crash when entering boot/recovery menu on Pixel/Pixel2 devices.
+
+v3.0.9.7
+Fixed boot.img not unpacking/repacking after last update.
+
+v3.0.9.6
+Updated checksum for Android Image Kitchen v3.0 by @osm0sis. Fixed dm-verity status display if fstab exists but dm-verity is in the dtb.
+
+v3.0.9.5
+Added support for removing dm-verity from dtb. Removed magiskboot option as it is no longer needed. Fixed extracting more than system sparsechunks in some moto firmware.
+
+v3.0.9.4
+Added support for fixing Moto system.img with additional superblock. Added a check for sparse images to only run simg2img if needed. Move art files along with odex and vdex for deodexing if they exist. Do not run smali if baksmali fails.
+
+v3.0.9.3
+Let the kitchen finish installing if downloading devices.zip is the only problem. Show list of failed items when kitchen tools install fails. Fixed asking for signature after changing perm types even if you already have one set. Fixed language conf not being unset after update. Fixed language conf not being unset when resetting all tools. Fixed dependencies conf not being unset when resetting all tools. Added option in the update menu to toggle checking for updates when the kitchen starts. Fixed update menu allowing you to choose non-existing options.
+
+v3.0.9.2
+Fixed deodexing framework for M, N and O smali/baksmali methods. Alphabetically sort oat deodexing.
+
+v3.0.9.1
+Fixed metadata lines not being added to the updater script after v3.0.8.9. Really don't log simg2img Invalid sparse file format. 
+
+v3.0.9.0
+Fixed broken by-name/mmc operations after last update. 
+
+v3.0.8.9
+Do not log simg2img Invalid sparse file format at header magi during extraction when trying to unsparse a raw img. Fixed boot.log ending up in the wrong place with the wrong name. Alphabetically sort the extract file list. Store ROM config info in project srk.conf instead of single line or empty files. Store kitchen config info in kitchen srk.conf instead of single line or empty files. Added temprorary function to convert single line and empty files into srk.conf lines. Fixed import readline error on 32-bit Linux. Fixed device asserts adding a comma after the default device if you leave the input field empty and press enter. Fixed language download. Minor code cleanup.
+
+v3.0.8.8
+Fixed crash and/or unexpected behavior if there is no fstab in the boot.img. Added option to patch the boot.img with magiskboot to disable dm-verity and forceencrypt (alpha testing). Added option to restore original boot/recovery.img after packing or patching. Fixed a few cosmetic bugs with menus and prompts. Log all boot pack/unpack operations in boot.log. Added ability to build ext4 img files from included directories chosen when extracting. Windows: Create fs_config files from tar/win backups. Get original file contexts from tar/win backups. Huge improvments in the set_metadata updater-script for tar/win extractions.
+
+v3.0.8.7
+Fixed crash if vdex is used but not for all odex files. Create fs_config for all img files extracted instead of only system and vendor. Use fs_config for creating all ext4 img files if it exists. Fixed some tar files not extracting and crashing in certain cases.
+
+v3.0.8.6
+Added tools/gapps to .gitignore for the gapps plugin to store gapps zips.
+
+v3.0.8.5
+Fixed /data not flashing in sparse_dat roms if set_metadata is chosen for /data.
+
+v3.0.8.4
+Fixed partition size through adb for /data. 
+
+v3.0.8.3
+Fixed data.new.dat not being created/zipped when choosing sparse_dat for data perm type.
+
+v3.0.8.2
+Fixed by-name address when adding /data to rom. Added check to be sure system.img can be fixed if created from Motorola sparsechunk files. Added status message when fixing Motorola system.img.
+
 v3.0.8.1
 Windows: Fixed extracting Motorola firmware that contains sparsechunk files. Linux: Removed awk, dd, and head dependencies. Log simg2img operations in main.log.
 

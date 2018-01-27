@@ -1,4 +1,5 @@
 /superr_*
+/mystuff
 /tools/img2sdat/*.pyc
 /tools/boot/*.zip
 /tools/inject-sepolicy/
@@ -27,7 +28,9 @@
 /tools/devices/*
 !/tools/devices/a5xelte
 !/tools/devices/ada
+!/tools/devices/addison
 !/tools/devices/angler
+!/tools/devices/Aqua Air
 !/tools/devices/Aquaris_E5_HD
 !/tools/devices/bullhead
 !/tools/devices/C6603
@@ -35,12 +38,16 @@
 !/tools/devices/cm_osprey
 !/tools/devices/cprimeltemtr
 !/tools/devices/D6503
+!/tools/devices/dream2lte
+!/tools/devices/dreamlte
 !/tools/devices/falcon_cdma
 !/tools/devices/flounder
+!/tools/devices/gracelte
 !/tools/devices/grandprimevelte
-!/tools/devices/gts28vewifi
 !/tools/devices/gts210vewifi
+!/tools/devices/gts28vewifi
 !/tools/devices/hammerhead
+!/tools/devices/hero2lte
 !/tools/devices/hero2qltevzw
 !/tools/devices/herolte
 !/tools/devices/hi6210sft
@@ -49,6 +56,7 @@
 !/tools/devices/htc_hiaeul
 !/tools/devices/htc_hiaewhl
 !/tools/devices/htc_m8
+!/tools/devices/htc_ocmdugl
 !/tools/devices/htc_pmewl
 !/tools/devices/HWGemini
 !/tools/devices/hwRIO-L01
@@ -61,7 +69,10 @@
 !/tools/devices/klteusc
 !/tools/devices/le_x2
 !/tools/devices/Lion-5
+!/tools/devices/marlin
+!/tools/devices/mido
 !/tools/devices/msm8916_32
+!/tools/devices/nash
 !/tools/devices/noblelte
 !/tools/devices/nobleltetmo
 !/tools/devices/odroidxu3
@@ -79,6 +90,7 @@
 !/tools/devices/sailfish
 !/tools/devices/shamu
 !/tools/devices/speed
+!/tools/devices/sperry
 !/tools/devices/sumire_dsds
 !/tools/devices/surnia_cdma
 !/tools/devices/tblte
