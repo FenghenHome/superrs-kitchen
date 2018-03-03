@@ -1,3 +1,15 @@
+v1.1.8.5
+Added option to patch sepolicy to allow zygote execute permission for dalvikcache_data_file after deodexing Oreo. Updated vdexExtractor by @anestisb. Moved changelog to a different server. Added several files to the Samsung knox remove list. Make sure all files with unique permissions make it into the set_setadata updater-script. Removed pre-defined set_metadata_recursive lines from the updater-script when extracting from img file. Prevent / being used in zip name. Fixed updater-script getting wiped when building ROM if there are a large amount of set_metadata lines.
+
+v1.1.8.4
+Fixed AIK download failing due to xda devdb no longer allowing direct downloads from external source.
+
+v1.1.8.3
+Added support for Oreo deodexing with vdexExtractor by @anestisb. Fixed some file capabilities not being read completely from the mounted img and getting ignored. Added support for extracting new Samsung firmware that uses lz4 compression. Fixed /data mount when flashing after adding userdata to the ROM.
+
+v1.1.8.2
+Massive improvements to set_metadata updater-script lines when extracting a system.img as the base. Sort extract options alphabetically. New kitchen launcher written in Python to prevent closing double-click to run window after keyboard interupt. Added support for extracting roms that include system.new.dat.br. Updated configure.sh to find full byname partition path on device. Updated updater-scripts to reflect the new configure.sh changes. Fixed adding /data support not replacing the partition placeholder and not working. Removed some unused dependencies.
+
 v1.1.8.1
 Updated md5 for Android Image Kitchen by @osm0sis to v3.1. Use apk name for deodexing instead of app directory name in case the names are different. General cleanup.
 

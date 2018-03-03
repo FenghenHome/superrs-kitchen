@@ -1,3 +1,39 @@
+v3.1.2.2
+Fixed skipping nonplat_file_contexts on Pixel style system.img causing failure when building ext4 img. Check if img is sparse before running simg2img when getting partition size. Sort fs_config and file_contexts3 files alphabetically.
+
+v3.1.2.1
+Fixed patching cil files while patching sepolicy for Oreo deodex.
+
+v3.1.2.0
+Fixed /data/app support still showing enabled after removing. Added option to patch sepolicy to allow zygote execute permission for dalvikcache_data_file after deodexing Oreo. Updated vdexExtractor by @anestisb. Fixed mount errors while flashing after adding /data/app. Make sure all files with unique permissions make it into the set_setadata updater-script. Removed pre-defined set_metadata_recursive lines from the updater-script when extracting from img file. Fixed file contexts in set_metadata updater-script for root directry files on devices with ramdisk in the system.img. Return an empty list instead of None when there is no match for getprop. Prevent / being used in zip name. Skip inodes that have an empty name when extracting from img files. Moved changelog to a different server.
+
+v3.1.1.9
+Fixed /data mount when flashing after adding userdata to the ROM. Fixed AIK download failing due to xda devdb no longer allowing direct downloads from external source.
+
+v3.1.1.8
+Fixed some file capabilities not being read completely and getting ignored.
+
+v3.1.1.7
+Fixed crash on all strange symlinks. Added support for extracting new Samsung firmware with lz4 compression.
+
+v3.1.1.6
+Fixed extracting files with unmapped blocks from ext4 img (only seen on Pixel/2/XL so far).
+
+v3.1.1.5
+Fixed file context regression from last update. Do not extract duplicate files ending in (2) from system.img. Fixed crash when using pre-defined capabilities due to none being found in the system.img.
+
+v3.1.1.4
+Fixed crash when encountering a symlink with strange data struture. Windows: Fixed crash when extracting if the inode name ends with /.
+
+v3.1.1.3
+Fixed files not extracting properly from system.img.
+
+v3.1.1.2
+Fixed Windows/Linux file capability inconsistencies in the updater-script. Windows: Extract files to _exfiles directory if there is another file with the same name but different case in the destination directory. Windows: Include _exfiles directories in rom. Fixed crash when performing update-binary conversion. Moved language file downloads to a different server.
+
+v3.1.1.1
+Removed external requests library dependency. Removed external psutil library dependency. Log all ramdisk modification errors in boot.log. Added support for extracting roms that include compressed system.new.dat.br. Updated configure.sh to find full byname partition path on device. Updated all updater-scripts to reflect the new configure.sh changes. Added AutoROM support for building the ROM. Added AutoROM support for signing the ROM.zip. Added AutoROM support for zipaligning. Added AutoROM support for deodexing Oreo. Added AutoROM support for converting updater-script to update-binary before building. Added AutoROM support for including cache.img. Added AutoROM support for removing dm-verity. Added AutoROM support for removing forceencrypt. Linux: When using AutoROM, set sudo in terminal at the beginning of extraction to avoid interuption.
+
 v3.1.1.0
 Fixed language entries getting cut off if there is an equal symbol in the text. Fixed gitlab username error message disappearing so fast you can't see it. Added check with gitlab api to be sure your username is correct as it will mess up the kitchen updater otherwise. Fixed crash when extracting older Nexus firmware that does not contain a vendor.img. Fixed custom bloat list not being refreshed when bloat_custom file changes. Read url output directly instead of downloading/reading a temporary file. Added several items to the knox remove list and bloat list. Added Windows support to the superr launcher (not superr.exe) for those who prefer to start the kitchen from the Windows command line.
 
