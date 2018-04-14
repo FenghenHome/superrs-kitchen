@@ -1,3 +1,48 @@
+v3.1.3.7
+Removed init.d support. Added oem.img bloat files to bloat list. Added AutoROM support for oem.img. Extract and fix Moto oem.img_sparsechunks from firmware package. Fixed partition paths in updater-script when device/superr_mmc file contains by-name paths. Remove duplicate classes when deodexing MIUI firmware. Huge speed improvement preparing files and significant updater-script size reduction when firmware such as MIUI has a large system/vendor directory. Fixed extracting Galaxy S2 firmware with factoryfs.img.
+
+v3.1.3.6
+Fixed crash when entering ROM tools.
+
+v3.1.3.5
+Added support for oem.img. Added check for spaces in the path, and an error message. Windows 7: Fixed ugly Quit/Restart due to ascii escape codes not working in the console.
+
+v3.1.3.4
+Added confirmation message when uploading support.zip. Fixed crash when boot.img status does not exist. Log exception when boot.img status does not exist. Delete system.new.dat after system.img conversion when converted from dat.br. Fixed improperly detecting some update-binary script roms causing a failure to extract.
+
+v3.1.3.3
+Fixed boot/recovery flashable zips not including install directory if there is no extracted ROM in the project directory. Fixed boot/recovery flashable zips mounting/extracting system when there is no system if there is no extracted ROM in the project directory. Fixed system/vendor/framework files not getting deodexed. Updated md5 for Android Image Kitchen v3.2 by @osm0sis.
+
+v3.1.3.2
+Updated img2sdat.py by @xpirt to v1.6 which now supports Python3. Removed Python2 dependency. Updated md5 for Busybox Installer by @osm0sis.
+
+v3.1.3.1
+Remove framework jar files from knox debloat list.
+
+v3.1.3.0
+When patching sepolicy for Oreo deodex, do not patch cil files if either zygote or dalvikcache_data_file do not already exist in the file. Fixed install directory being empty (so sorry everyone).
+
+v3.1.2.9
+Windows: Fixed scripts in the install directory failing due to improper git setting core.autocrlf (line ending normalization) to true when installing git. Fixed capabilities in set_metadata updater-script, a regression from v3.1.2.8. Fixed Pixel style firmware crashing during extraction. If system_image.emmc.win is chosen, rename to system.img and extract.
+
+v3.1.2.8
+Fixed flashing issues since adding the backup/restore and changing the location of configure.sh. More fine tuning for the set_metadata updater-script.
+
+v3.1.2.7
+Do not assume the default vendor partition context is vendor_file. Added support for version, product, and cust partitions in configure.sh for Huawei ROMs.
+
+v3.1.2.6
+Updated smali/baksmali to v2.2.3. Renamed config directory to install. Fixed configure.sh not found error when flashing. Fixed changing perm types not replacing the config directory properly.
+
+v3.1.2.5
+Added backup/restore to updater-script for all perm types to provide addon.d survival script support. Fixed extracting Android P firmware.
+
+v3.1.2.4
+Updated vdexExtractor by @anestisb. Use new --ignore-crc-error argument to the vdexExtractor command if deodex fails without it. Write vdexExtractor crc ignored files to deodex_crc_ignored log for reference. Fixed Chinese language crash. Find zygote and dalvikcache_data_file names before patching sepolicy and cil to be sure we get everything.
+
+v3.1.2.3
+Fixed crash when checking dm-verity status.
+
 v3.1.2.2
 Fixed skipping nonplat_file_contexts on Pixel style system.img causing failure when building ext4 img. Check if img is sparse before running simg2img when getting partition size. Sort fs_config and file_contexts3 files alphabetically.
 

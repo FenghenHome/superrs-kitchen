@@ -13,17 +13,11 @@ banner() {
 aikdl() {
 	sterm=$(echo "$dlinfo" | gawk '{print $2}')
 	nname=$(echo "$dlinfo" | gawk '{print $1}')
-	for i in \
-		"$(wget -qO- "https://forum.xda-developers.com/showthread.php?t=2073775" | cat | grep "$sterm\.zip\|$sterm-" | cut -d'"' -f2 | grep http)" \
-		"https://basketbuild.com/uploads/devs/osm0sis/aik/$(basename $(wget -qO- "https://basketbuild.com/devs/osm0sis/aik" | cat | grep ">Download<" | grep "$sterm" | cut -d'"' -f4))"\
-	; do
-		(wget -O "$nname" "$i" 2>&1) >/dev/null
-		if [[ -f "$nname" && $(file "$nname" | grep "Zip\|gzip") ]]; then
-			break
-		else
-			rm -rf "$nname"
-		fi
-	done
+	dlfile=$(wget -qO- "https://forum.xda-developers.com/showthread.php?t=2073775" | cat | grep "$sterm\.zip\|$sterm-" | cut -d'"' -f2 | grep http)
+	(wget -O "$nname" "$dlfile" 2>&1) >/dev/null
+	if [[ ! -f "$nname" || ! $(file "$nname" | grep "Zip\|gzip") ]]; then
+		rm -rf "$nname"
+	fi
 }
 assert_devices() {
 	assertch=""
@@ -151,15 +145,12 @@ boot_dmverity() {
 	if [[ $fstab != 1 && -f "$fstab" ]]; then
 		banner
 		echo "${bluet}Removing dm-verity from ramdisk ...$normal"
-		${usesudo}$tools/source/rmverity.py $fstab >> $logs/boot.log
-		if [[ ! $(echo "$fstab" | grep "bootimg\|recoveryimg") ]]; then
-			${usesudo}chown -h $myuser:$myuser $fstab
-		fi
+		${usesudo}python3 $tools/source/rmverity.py $fstab >> $logs/boot.log
 	fi
 	if [[ -f $romdir/${chosenimg}img/split_img/${chosenimg}.img-zImage ]]; then
 		banner
 		echo "${bluet}Removing dm-verity from dtb ...$normal"
-		${usesudo}$tools/source/rmverity.py $romdir/${chosenimg}img/split_img/${chosenimg}.img-zImage >> $logs/boot.log
+		${usesudo}python3 $tools/source/rmverity.py $romdir/${chosenimg}img/split_img/${chosenimg}.img-zImage >> $logs/boot.log
 	fi
 }
 boot_forcee() {
@@ -175,9 +166,6 @@ boot_forcee() {
 		for i in $fetmp; do
 			if [[ $(${usesudo}grep "/data" $fstab | grep "$i") ]]; then
 				${usesudo}sed -i "/\/data/s/$i/encryptable/g" $fstab
-				if [[ ! $(echo "$fstab" | grep "bootimg\|recoveryimg") ]]; then
-					${usesudo}chown -h $myuser:$myuser $fstab
-				fi
 				touch $prfiles/$i
 			fi
 		done
@@ -364,11 +352,13 @@ boot_repack() {
 		rm -rf $romdir/${chosenimg}img
 	fi
 	if [[ $islg = "lge" ]]; then
-		$tools/open_bump.py $chosenimg.img
-		mv ${chosenimg}_bumped.img $chosenimg.img
-		if [[ ! $bootext ]]; then
-			echo "$greent$t_boot_bump_rename $chosenimg.img$normal"
-			echo ""
+		if [[ -f $tools/open_bump.py ]]; then
+			python3 $tools/open_bump.py $chosenimg.img
+			mv ${chosenimg}_bumped.img $chosenimg.img
+			if [[ ! $bootext ]]; then
+				echo "$greent$t_boot_bump_rename $chosenimg.img$normal"
+				echo ""
+			fi
 		fi
 	fi
 	if [[ ! $bootext ]]; then
@@ -451,10 +441,10 @@ boot_tools() {
 				bumpedr=""
 				cd $romdir
 				if [[ -f $romdir/recovery.img ]]; then
-					bumpedr=$($tools/open_bump.py recovery.img | grep "already bumped")
+					bumpedr=$(python3 $tools/open_bump.py recovery.img | grep "already bumped")
 					rm -rf recovery_bumped.img
 				else
-					bumped=$($tools/open_bump.py boot.img | grep "already bumped")
+					bumped=$(python3 $tools/open_bump.py boot.img | grep "already bumped")
 					rm -rf boot_bumped.img
 				fi
 				if [[ $bumped ]]; then
@@ -565,15 +555,6 @@ boot_tools() {
 					continue
 				elif [[ $choice = "4" ]]; then # START Remove dm-verity
 					findfstab
-					# if [[ ! $(${usesudo}grep "verify" $fstab) ]]; then
-					# 	banner
-					# 	echo "${redb}${yellowt}${bold}$t_notice$normal"
-					# 	echo "$redt$t_boot_already_dmverity$normal"
-					# 	echo ""
-					# 	read -p "$t_enter_boot_menu"
-					# 	choice=""
-					# 	continue
-					# fi
 					boot_dmverity
 					banner
 					echo "$greent$t_boot_dmverity_rem$normal"
@@ -599,23 +580,44 @@ boot_tools() {
 						while read i; do
 							omd5=$(md5sum "$i" | gawk '{print $1}')
 							if [[ $(echo "$i" | grep "\.cil$") ]]; then
-								line=$(grep "(allow zygote dalvikcache_data_file (file (" "$i")
+								line=$(grep -e "(allow zygote.* dalvikcache_data_file.* (file (" "$i")
 								if [[ $line ]]; then
-									if [[ ! $(echo "$line" | grep "execute") ]]; then
-										nline=$(echo "$line" | sed 's/)))/\ execute)))/')
-										sed -i "s/$line/$nline/" "$i"
-									fi
+									while read e; do
+										if [[ ! $(echo "$e" | grep "execute") ]]; then
+											nline=$(echo "$e" | sed 's/)))/\ execute)))/')
+											sed -i "s/$e/$nline/" "$i"
+										fi
+									done <<< "$line"
 								else
-									echo "(allow zygote dalvikcache_data_file (file (execute)))" >> "$i"
+									znames=$(grep -e "(allow zygote.*" "$i" | cut -d' ' -f2 | sort -u)
+									dnames=$(grep -e "(allow .*dalvikcache_data_file.*" "$i" | cut -d' ' -f3 | sort -u)
+									if [[ $znames && $dnames ]]; then
+										while read z; do
+											while read d; do
+												echo "(allow $z $d (file (execute)))" >> "$i"
+											done <<< "$dnames"
+										done <<< "$znames"
+									fi
 								fi
 							else
-								$usesudo$ttools/bootimg seinject -s zygote -t dalvikcache_data_file -c file -p execute -P "$i" -o "$i" >> $logs/boot.log
+								dumpf=$($usesudo$ttools/bootimg seinject -dt -P "$i")
+								znames=$(grep -e "ALLOW zygote.*" <<< "$dumpf" | cut -d' ' -f3 | sort -u)
+								dnames=$(grep -e "ALLOW.*dalvikcache_data_file.*" <<< "$dumpf" | cut -d' ' -f5 | sort -u)
+								if [[ $znames && $dnames ]]; then
+									while read z; do
+										while read d; do
+											$usesudo$ttools/bootimg seinject -s $z -t $d -c file -p execute -P "$i" -o "$i" >> $logs/boot.log
+										done <<< "$dnames"
+									done <<< "$znames"
+								else
+									$usesudo$ttools/bootimg seinject -s zygote -t dalvikcache_data_file -c file -p execute -P "$i" -o "$i" >> $logs/boot.log
+								fi
 							fi
 							if [[ $(md5sum "$i" | gawk '{print $1}') != $omd5 ]]; then
 								sepgood=1
 								${usesudo}chown $myuser:$myuser "$i"
 							fi
-						done <<< "$(echo "$sepol")"
+						done <<< "$sepol"
 						banner
 						if [[ $sepgood ]]; then
 							echo "$greent$t_menu_deopatch_add$normal"
@@ -709,7 +711,7 @@ boot_tools() {
 						mv $romdir/META-INF $romdir/META-INF1
 					fi
 					cp -R $tools/updater/META-INF $romdir/
-					cp -R $tools/updater/config $romdir/
+					cp -R $tools/updater/install $romdir/
 					rm -rf $usdir/updater-script
 					if [[ $chosenimg = "recovery" ]]; then
 						signature2=$(echo "$signature-recovery")
@@ -750,7 +752,7 @@ boot_tools() {
 						if [[ -f $signature2.zip ]]; then
 							mv $signature2.zip ${signature2}_$timestamp.zip
 						fi
-						$p7z a -tzip -mx5 $signature2.zip config recovery.img META-INF 2>/dev/null >> $logs/zip.log
+						$p7z a -tzip -mx5 $signature2.zip install recovery.img META-INF 2>/dev/null >> $logs/zip.log
 					elif [[ $chosenimg = "boot" && -f $romdir/boot.img ]]; then
 						echo "$bluet$signature2.zip $t_general_build $romname ...$normal"
 						cd $romdir
@@ -758,9 +760,9 @@ boot_tools() {
 							mv $signature2.zip ${signature2}_$timestamp.zip
 						fi
 						if [[ -d $sysdir/etc/init.d ]]; then
-							$p7z a -tzip -mx5 $signature2.zip config boot.img system/etc/init.d META-INF 2>/dev/null >> $logs/zip.log
+							$p7z a -tzip -mx5 $signature2.zip install boot.img system/etc/init.d META-INF 2>/dev/null >> $logs/zip.log
 						else
-							$p7z a -tzip -mx5 $signature2.zip config boot.img META-INF 2>/dev/null >> $logs/zip.log
+							$p7z a -tzip -mx5 $signature2.zip install boot.img META-INF 2>/dev/null >> $logs/zip.log
 						fi
 					else
 						rm -rf $romdir/META-INF
@@ -847,7 +849,7 @@ build_custom_zip() {
 		if [[ -f $signature2.zip ]]; then
 			mv $signature2.zip ${signature2}_$timestamp.zip
 		fi
-		$p7z a -tzip -mx5 $signature2.zip config system META-INF 2>/dev/null >> $logs/zip.log
+		$p7z a -tzip -mx5 $signature2.zip install system META-INF 2>/dev/null >> $logs/zip.log
 		rm -rf $romdir/META-INF
 		if [[ -d $romdir/META-INF1 ]]; then
 			mv $romdir/META-INF1 $romdir/META-INF
@@ -941,7 +943,7 @@ build_custom_zip() {
 			mv $romdir/META-INF $romdir/META-INF1
 		fi
 		cp -R $tools/updater/META-INF $romdir/META-INF
-		cp -R $tools/updater/config $romdir/
+		cp -R $tools/updater/install $romdir/
 		rm -rf $usdir/updater-script
 		cp $tools/updater/custom/updater-script-system $usdir/updater-script
 		chosenimg="boot"
@@ -1319,9 +1321,9 @@ build_rom_zip() {
 		echo "$yellowt$t_build_patient$normal"
 		echo ""
 		if [[ -f $prfiles/data-set_metadata ]]; then
-			exzipfiles="install boot.img META-INF config supersu rootzip busybox gapps xposed magisk mod* data $cusdir"
+			exzipfiles="install boot.img META-INF supersu rootzip busybox gapps xposed magisk mod* data $cusdir"
 		else
-			exzipfiles="install boot.img META-INF config supersu rootzip busybox gapps xposed magisk mod* $cusdir"
+			exzipfiles="install boot.img META-INF supersu rootzip busybox gapps xposed magisk mod* $cusdir"
 		fi
 		$p7z a -tzip -mx5 $signature.zip *.new.dat *.patch.dat *.transfer.list $exzipfiles $prfiles/file_contexts 2>/dev/null >> $logs/zip.log
 		rm -rf *.new.dat *.transfer.list *.patch.dat
@@ -1373,16 +1375,16 @@ build_rom_zip() {
 		echo "$yellowt$t_build_patient$normal"
 		echo ""
 		if [[ -f $prfiles/data-set_metadata ]]; then
-			exzipfiles="boot.img META-INF config supersu rootzip busybox gapps xposed magisk mod* data $cusdir"
+			exzipfiles="boot.img META-INF install supersu rootzip busybox gapps xposed magisk mod* data $cusdir"
 		else
-			exzipfiles="boot.img META-INF config supersu rootzip busybox gapps xposed magisk mod* $cusdir"
+			exzipfiles="boot.img META-INF install supersu rootzip busybox gapps xposed magisk mod* $cusdir"
 		fi
 		$p7z a -tzip -mx5 $signature.zip *_new.img $exzipfiles 2>/dev/null >> $logs/zip.log
 		rm -rf *_new.img
 	else
 		banner
 		echo "$bluet$signature.zip $t_general_build $romname ...$normal"
-		exzipfiles="boot.img META-INF config system supersu rootzip busybox gapps xposed magisk data $cusdir $(cat $prfiles/exdirs 2>/dev/null| tr '\n', ' ') "
+		exzipfiles="boot.img META-INF install system supersu rootzip busybox gapps xposed magisk data $cusdir $(cat $prfiles/exdirs 2>/dev/null| tr '\n', ' ') "
 		$p7z a -tzip -mx5 $signature.zip $exzipfiles mod* 2>/dev/null >> $logs/zip.log
 	fi
 	banner
@@ -1635,7 +1637,7 @@ change_permtype() {
 				permtype="set_metadata"
 				echo "set_metadata" > $prfiles/permtype
 				cp -R $tools/updater/META-INF $romdir/
-				cp -R $tools/updater/config $romdir/
+				cp -R $tools/updater/install $romdir/
 			fi
 			if [[ -s $prfiles/$permtype ]]; then
 				cd $usdir
@@ -1647,11 +1649,11 @@ change_permtype() {
 			fi
 			if [[ $permtype = "sparse_dat" || $permtype = "raw_img" ]]; then
 				cd $romdir
-				rm -rf install META-INF config
+				rm -rf install META-INF config install
 				cd $prfiles
 				rm -rf permtype set_metadata set_perm exdone
 				cp -R $tools/updater/META-INF $romdir
-				cp -R $tools/updater/config $romdir/
+				cp -R $tools/updater/install $romdir/
 			fi
 			permtype="set_metadata"
 			if [[ -f $prfiles/permtype ]]; then
@@ -1664,7 +1666,7 @@ change_permtype() {
 				permtype="set_perm"
 				echo "set_perm" > $prfiles/permtype
 				cp -R $tools/updater/META-INF $romdir
-				cp -R $tools/updater/config $romdir/
+				cp -R $tools/updater/install $romdir/
 			fi
 			if [[ -s $prfiles/$permtype ]]; then
 				cd $usdir
@@ -1680,7 +1682,7 @@ change_permtype() {
 				cd $prfiles
 				rm -rf permtype set_metadata set_perm exdone
 				cp -R $tools/updater/META-INF $romdir
-				cp -R $tools/updater/config $romdir/
+				cp -R $tools/updater/install $romdir/
 			fi
 			permtype="set_perm"
 			if [[ -f $prfiles/permtype ]]; then
@@ -1698,10 +1700,9 @@ change_permtype() {
 				continue
 			fi
 			echo "$bluet$t_perm_changing_perm$normal"
-			rm -rf $romdir/META-INF $romdir/config
+			rm -rf $romdir/META-INF $romdir/config $romdir/install
 			cp -R $tools/updater/META-INF-DAT/META-INF $romdir/
-			cp -R $tools/updater/META-INF-DAT/install $romdir/
-			cp -R $tools/updater/config $romdir/
+			cp -R $tools/updater/install $romdir/
 			cp $tools/updater/META-INF/com/google/android/update-binary $usdir/
 			cd $prfiles
 			rm -rf permtype set_metadata set_perm exdone
@@ -1714,7 +1715,7 @@ change_permtype() {
 			echo "$bluet$t_perm_changing_perm$normal"
 			rm -rf $romdir/META-INF $romdir/install $romdir/config
 			cp -R $tools/updater/META-INF-IMG/META-INF $romdir/
-			cp -R $tools/updater/config $romdir/
+			cp -R $tools/updater/install $romdir/
 			cp $tools/updater/META-INF/com/google/android/update-binary $usdir/
 			cd $prfiles
 			rm -rf permtype set_metadata set_perm exdone
@@ -2416,9 +2417,14 @@ deodex() {
 					cd $deoarch
 					$vdexext -i $app2.vdex >> $logs/deodex.log
 					if [[ ! -f $app2.apk_classes.dex ]]; then
-						echo "${deoappdir/$romdir/}/$app/$app2.apk" >> $logs/deodex_fail_list
-						rm -rf $app2.apk_classes*
-						continue
+						$vdexext -i $app2.vdex --ignore-crc-error >> $logs/deodex.log
+						if [[ ! -f $app2.apk_classes.dex ]]; then
+							echo "${deoappdir/$romdir/}/$app/$app2.apk" >> $logs/deodex_fail_list
+							rm -rf $app2.apk_classes*
+							continue
+						else
+							echo "${deoappdir/$romdir/}/$app/$app2.apk" >> $logs/deodex_crc_ignored
+						fi
 					fi
 					
 					ls | grep ".apk_classes" | while read i; do
@@ -2775,8 +2781,13 @@ deodex() {
 				mv "$i" "$nname.vdex"
 				$vdexext -i "$nname.vdex" >> $logs/deodex.log
 				if [[ ! $(ls | grep "$nname.apk_classes") ]]; then
-					echo "${d/$romdir/}/$nname.jar" >> $logs/deodex_fail_list
-					continue
+					$vdexext -i "$nname.vdex" --ignore-crc-error >> $logs/deodex.log
+					if [[ ! $(ls | grep "$nname.apk_classes") ]]; then
+						echo "${d/$romdir/}/$nname.jar" >> $logs/deodex_fail_list
+						continue
+					else
+						echo "${d/$romdir/}/$nname.jar" >> $logs/deodex_crc_ignored
+					fi
 				fi
 				ls | grep "$nname.apk" | while read r; do
 					mv "$r" "$framedir/$(echo "$r" | sed 's/apk_/jar:/')"
@@ -2795,8 +2806,13 @@ deodex() {
 				echo ""
 				$vdexext -i "$i" >> $logs/deodex.log
 				if [[ ! $(ls | grep ".apk_classes") ]]; then
-					echo "${d/$romdir/}/$nname.jar" >> $logs/deodex_fail_list
-					continue
+					$vdexext -i "$i" --ignore-crc-error >> $logs/deodex.log
+					if [[ ! $(ls | grep ".apk_classes") ]]; then
+						echo "${d/$romdir/}/$nname.jar" >> $logs/deodex_fail_list
+						continue
+					else
+						echo "${d/$romdir/}/$nname.jar" >> $logs/deodex_crc_ignored
+					fi
 				fi
 				ls | grep "$nname.apk" | while read r; do
 					mv $r $framedir/$(echo "$r" | sed 's/apk_/jar:/')
@@ -3496,7 +3512,7 @@ extract_new() {
 				rm -rf META-INF
 				romzip=""
 				cp -R $tools/updater/META-INF META-INF
-				cp -R $tools/updater/config $romdir/
+				cp -R $tools/updater/install $romdir/
 				get_devicename
 				if [[ ! -d "$base/tools/devices/$devicename" ]]; then
 					mkdir -p "$base/tools/devices/$devicename"
@@ -3521,7 +3537,7 @@ extract_new() {
 					fi
 					banner
 					echo "$bluet$t_extract_convert_sys $line.img ...$normal"
-					$ttools/sdat2img.py $line.transfer.list $line.new.dat $line.img > $logs/main.log
+					python3 $ttools/sdat2img.py $line.transfer.list $line.new.dat $line.img > $logs/main.log
 					rm -rf $line.transfer.list $line.new.dat
 				done
 				romzip=""
@@ -3669,7 +3685,7 @@ extract_new() {
 				rm -rf *chunk*
 				banner
 				echo "$bluet$t_extract_fix_img$normal"
-				$tools/source/fixmoto.py system.img.raw system.img >> $logs/main.log
+				python3 $tools/source/fixmoto.py system.img.raw system.img >> $logs/main.log
 				if [[ -f system.img ]]; then
 					rm -rf system.img.raw
 				else
@@ -3883,7 +3899,7 @@ extract_new() {
 				rm -rf $prfiles/permtype
 				permtype=""
 				cp -R $tools/updater/META-INF $romdir/
-				cp -R $tools/updater/config $romdir/
+				cp -R $tools/updater/install $romdir/
 				cd $romdir
 				if [[ ! $cyg ]]; then
 					link1=$(find system vendor -type l -printf "%l\n" 2>/dev/null | sed 's/^/symlink(\"/; s/$/\", /')
@@ -4298,24 +4314,27 @@ get_byname() {
 get_contexts() {
 	docon() {
 		if [[ ! -f $prfiles/file_contexts ]]; then
-			if [[ -f $romdir/system/file_contexts.bin ]]; then
-				cp $romdir/system/file_contexts.bin $prfiles/
-			elif [[ -f $romdir/${chosenimg}img/ramdisk/file_contexts ]]; then
-				${usesudo}cp $romdir/${chosenimg}img/ramdisk/file_contexts $prfiles/
-			elif [[ -f $romdir/${chosenimg}img/ramdisk/file_contexts.bin ]]; then
-				${usesudo}cp $romdir/${chosenimg}img/ramdisk/file_contexts.bin $prfiles/
-			elif [[ -f $romdir/${chosenimg}img/ramdisk/plat_file_contexts ]]; then
-				${usesudo}cp $romdir/${chosenimg}img/ramdisk/plat_file_contexts $prfiles/file_contexts
-				${usesudo}chown -h $myuser:$myuser $prfiles/file_contexts
-				nonplat=$(${usesudo}cat $romdir/${chosenimg}img/ramdisk/nonplat_file_contexts)
-				echo "$nonplat" >> $prfiles/file_contexts
-			elif [[ -f $romdir/output/file_contexts.bin ]]; then
-				cp $romdir/output/file_contexts.bin $prfiles/
-			elif [[ -f $romdir/output/file_contexts ]]; then
-				cp $romdir/output/file_contexts $prfiles/
-			elif [[ -f $romdir/system/file_contexts ]]; then
-				cp $romdir/system/file_contexts $prfiles/
-			fi
+			local c="/file_contexts"
+			local b="/file_contexts.bin"
+			local p="/plat_file_contexts"
+			local n="/nonplat_file_contexts"
+			
+			for f in "$romdir/system" "$romdir/system/system" "$romdir/bootimg/ramdisk" "$romdir/recoveryimg/ramdisk" "$romdir/system/etc/selinux" "$romdir/system/system/etc/selinux" "$romdir/vendor/etc/selinux" "$romdir/output"; do
+				if [[ -f "$f$c" ]]; then
+					${usesudo}cp "$f$c" "$prfiles/"
+					break
+				fi
+				if [[ -f "$f$b" ]]; then
+					${usesudo}cp "$f$b" "$prfiles/"
+					break
+				fi
+				if [[ -f "$f$p" ]]; then
+					cat "$f$p" >> "$prfiles$c"
+				fi
+				if [[ -f "$f$n" ]]; then
+					cat "$f$n" >> "$prfiles$c"
+				fi
+			done
 		fi
 	}
 	docon
@@ -4535,8 +4554,10 @@ imgextract() {
 		else
 			apitemp=""
 		fi
+		banner
+		echo "$bluet$t_cust_prep$normal"
 		if [[ $apitmp -ge "19" ]]; then
-			local getmeta=$($tools/source/getmeta.py -s "$romdir/output" "$extractimg")
+			local getmeta=$(python3 $tools/source/getmeta.py -s "$romdir/output" "$extractimg")
 			if [[ $extractimg = "system" || $extractimg = "vendor" ]]; then
 				if [[ $extractimg = "system" ]]; then
 					if [[ -f output/init.rc && -d output/system/app ]]; then
@@ -4564,7 +4585,7 @@ imgextract() {
 				elif [[ $extractimg = "vendor" ]]; then
 					cp $tools/updater/set_meta_listV $prfiles/tmpmetalist
 				fi				
-				echo "$getmeta" | grep -v ":${extractimg}_file" | sort | while read line; do
+				echo "$getmeta" | grep -v ":$(grep -m 1 "^$extractimg " <<< "$getmeta" | cut -d':' -f3)" | sort | while read line; do
 					i=$(echo "$line" | gawk '{print $1}')
 					if [[ ! $(grep "$i$" $prfiles/tmpmetalist) ]]; then
 						echo "$i" >> $prfiles/tmpmetalist
@@ -4777,7 +4798,7 @@ isdmverity() {
 		return 1
 	fi
 	findfstab
-	vdtb=$($tools/source/rmverity.py -s $romdir/${chosenimg}img/split_img/${chosenimg}.img-zImage)
+	vdtb=$(python3 $tools/source/rmverity.py -s $romdir/${chosenimg}img/split_img/${chosenimg}.img-zImage)
 	vfstab=""
 	if [[ $fstab != 1 ]]; then
 		vfstab=$(${usesudo}grep "verify" $fstab)
@@ -5497,7 +5518,7 @@ partsdat() {
 		aver="4"
 	fi
 	cd $romdir
-	( $tools/img2sdat/img2sdat.py ${whatimg}_new.img $romdir/tmpsparse $aver 2>&1 ) >> $logs/main.log
+	( python3 $tools/img2sdat/img2sdat.py ${whatimg}_new.img $romdir/tmpsparse $aver 2>&1 ) >> $logs/main.log
 	rm -rf ${whatimg}_new.img
 	cd $romdir/tmpsparse
 	if [[ ! $whatimg = "system" ]]; then
@@ -5812,7 +5833,7 @@ root() {
 			elif [[ $choice = "3" ]]; then
 				if [[ ! -d $tools/inject-sepolicy ]]; then
 					cd $tools
-					(wget https://github.com/FenghenHome/superrs-kitchen/raw/master/download/inject-sepolicy-addon.zip 2>&1) >> $logs/zip.log
+					(wget https://bitbucket.org/superr/superrs-kitchen/downloads/inject-sepolicy-addon.zip 2>&1) >> $logs/zip.log
 					$p7z x -y inject-sepolicy-addon.zip 2>&1 >> $logs/zip.log
 					rm -rf inject-sepolicy-addon.zip
 					root
@@ -6224,8 +6245,7 @@ update_project() {
 					permtype="sparse_dat"
 					rm -rf $romdir/META-INF $romdir/config $romdir/install
 					cp -R $tools/updater/META-INF-DAT/META-INF $romdir/
-					cp -R $tools/updater/META-INF-DAT/install $romdir/
-					cp -R $tools/updater/config $romdir/
+					cp -R $tools/updater/install $romdir/
 					cp $tools/updater/META-INF/com/google/android/update-binary $usdir/
 					cd $prfiles
 					rm -rf permtype set_metadata set_perm
@@ -6235,7 +6255,7 @@ update_project() {
 					rm -rf $romdir/META-INF $romdir/install $romdir/config
 					cd $tools/updater
 					cp -R $tools/updater/META-INF-IMG/META-INF $romdir/
-					cp -R $tools/updater/config $romdir/
+					cp -R $tools/updater/install $romdir/
 					cp $tools/updater/META-INF/com/google/android/update-binary $usdir/
 					cd $prfiles
 					rm -rf permtype set_metadata set_perm
@@ -6460,7 +6480,7 @@ stand=$(tput smso)
 underline=$(tput smul)
 normal=$(tput sgr0)
 clears=$(tput clear)
-dlurl="https://github.com/FenghenHome/superrs-kitchen/raw/master/download"
+dlurl="https://bitbucket.org/superr/superrs-kitchen/downloads"
 if [[ $(echo $(pwd) | grep " ") ]]; then
 	banner
 	echo "$redb$yellowt${bold}ERROR:$normal"
@@ -6634,6 +6654,13 @@ if [[ ! -f $tools/depmet ]]; then
 			read -p "$t_enter_exit"
 			exit
 		fi
+	fi
+	if [[ $(python3 -V | gawk '{print $2}' | sed 's/\.//g') < "350" ]]; then
+		banner
+		echo "$redt$t_startup_python$(python3 -V | gawk '{print $2}')$normal"
+		echo ""
+		read -p "$t_enter_exit"
+		exit
 	fi
 	javabad=""
 	if [[ ! $(which java) ]]; then

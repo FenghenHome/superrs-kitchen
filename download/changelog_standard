@@ -1,3 +1,24 @@
+v1.1.9.3
+Fixed some vendor set_metadata lines being skipped.
+
+v1.1.9.2
+Updated img2sdat.py by @xpirt to v1.6. Updated md5 for Busybox Installer by @osm0sis. Updated md5 for Android Image Kitchen v3.2 by @osm0sis.
+
+v1.1.9.1
+When patching sepolicy for Oreo deodex, do not patch cil files if either zygote or dalvikcache_data_file do not already exist in the file. Remove framework jar files from knox debloat list.
+
+v1.1.9.0
+Fixed flashing issues since adding the backup/restore and changing the location of configure.sh.
+
+v1.1.8.9
+Fixed grep errors during extraction.
+
+v1.1.8.7
+Updated vdexExtractor by @anestisb. Use new --ignore-crc-error argument to the vdexExtractor command if deodex fails without it. Write crc ignored files to deodex_crc_ignored log for reference. Find zygote and dalvikcache_data_file names before patching sepolicy and cil to be sure we get everything patched. Added backup/restore to all perm types to provide addon.d survival script support. Updated smali/baksmali to v2.2.3. Improvements to /vendor set_metadata lines on devices where the default vendor context is not vendor_file. Added check for Python version to be sure it is 3.5 or higher. Added support for version, product, and cust partitions in configure.sh for Huawei ROMs.
+
+v1.1.8.6
+Fixed skipping nonplat_file_contexts on Pixel style system.img causing failure when building ext4 img. Show preparing files text after extracting system.img files.
+
 v1.1.8.5
 Added option to patch sepolicy to allow zygote execute permission for dalvikcache_data_file after deodexing Oreo. Updated vdexExtractor by @anestisb. Moved changelog to a different server. Added several files to the Samsung knox remove list. Make sure all files with unique permissions make it into the set_setadata updater-script. Removed pre-defined set_metadata_recursive lines from the updater-script when extracting from img file. Prevent / being used in zip name. Fixed updater-script getting wiped when building ROM if there are a large amount of set_metadata lines.
 
