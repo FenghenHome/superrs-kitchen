@@ -4532,8 +4532,8 @@ install_binaries() {
 	fi
 	if [[ ! -d $tools/boot/AIK ]]; then
 		cd $tools/boot
-		dlinfo="aik.tar.gz AIK-Linux"
-		aikdl
+		ssurl=$(grep "aik =" $tools/depends/urls | gawk '{print $3}')
+		(wget -O aik.tar.gz $ssurl 2>&1) >/dev/null
 		tar -xf aik.tar.gz 2>&1 >/dev/null
 		rm -rf aik.tar.gz
 		mv AIK-Linux AIK
